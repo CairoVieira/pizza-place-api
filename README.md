@@ -1,3 +1,11 @@
+# PIZZA-PLACE-API
+
+## Configuração Inicial
+
+    Após clonar o projeto para o workspace, deverá ser instalado as dependências dele com o comando
+
+    ``ǹpm i```
+
 ## Arquitetura
 
 Este projeto segue a arquitetura mais utilizada pelo mercado, o MVC (Model-View-Controller).
