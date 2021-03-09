@@ -4,7 +4,7 @@
 
     Após clonar o projeto para o workspace, deverá ser instalado as dependências dele com o comando
 
-    ``ǹpm i```
+    ``npm i```
 
 ## Arquitetura
 
