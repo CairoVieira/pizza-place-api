@@ -1,11 +1,12 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { health } from "./HealthRoute";
+import { pizza } from "./PizzaRoute";
+import { bebida } from "./BebidaRoute";
 
-const router = Router();
+const routes = Router();
 
-router.get("/health", (request: Request, response: Response) => {
-    response.send({
-        mensagem: "Servidor online!",
-    });
-});
+routes.use("/health", health);
+routes.use("/pizza", pizza);
+routes.use("/bebida", bebida);
 
-export { router };
+export { routes };
