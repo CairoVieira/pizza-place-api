@@ -6,7 +6,7 @@ import { bebida } from "./BebidaRoute";
 const routes = Router();
 
 routes.use("/health", health);
-routes.use("/pizza", pizza);
-routes.use("/bebida", bebida);
+routes.use("/pizzas", pizza);
+routes.use("/bebidas", bebida);
 
 export { routes };
