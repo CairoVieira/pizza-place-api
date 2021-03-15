@@ -26,15 +26,18 @@ class BebidaController {
         }
     }
 
-    async salvar(nome: string, valor: number, tipo: string) {
+    async salvar(nome: string, valor: number, categoria: string) {
         try {
             const bebida = yup.object().shape({
                 nome: yup.string().required("Nome é obrigatório"),
                 valor: yup.number().required("Valor é obrigatório"),
-                tipo: yup.string().uppercase().required("Tipo é obrigatório"),
+                categoria: yup
+                    .string()
+                    .uppercase()
+                    .required("Tipo é obrigatório"),
             });
 
-            await bebida.validate({ nome, valor, tipo });
+            await bebida.validate({ nome, valor, categoria });
 
             const bebidaRepository = getCustomRepository(BebidaRepository);
 
@@ -49,7 +52,7 @@ class BebidaController {
             const bebidaCreated = bebidaRepository.create({
                 nome: nome.toLowerCase(),
                 valor,
-                tipo: tipo.toUpperCase(),
+                categoria: categoria.toUpperCase(),
             });
 
             await bebidaRepository.save(bebidaCreated);
@@ -60,16 +63,24 @@ class BebidaController {
         }
     }
 
-    async atualizar(id: string, nome: string, valor: number, tipo: string) {
+    async atualizar(
+        id: string,
+        nome: string,
+        valor: number,
+        categoria: string
+    ) {
         try {
             const bebida = yup.object().shape({
                 id: yup.string().required("ID é obrigatório"),
                 nome: yup.string().required("Nome é obrigatório"),
                 valor: yup.number().required("Valor é obrigatório"),
-                tipo: yup.string().uppercase().required("Tipo é obrigatório"),
+                categoria: yup
+                    .string()
+                    .uppercase()
+                    .required("Tipo é obrigatório"),
             });
 
-            await bebida.validate({ id, nome, valor, tipo });
+            await bebida.validate({ id, nome, valor, categoria });
 
             const bebidaRepository = getCustomRepository(BebidaRepository);
             const bebidaUpdated = await bebidaRepository.findOne(id);
@@ -81,7 +92,7 @@ class BebidaController {
                 id,
                 nome: nome.toLowerCase(),
                 valor,
-                tipo: tipo.toUpperCase(),
+                categoria: categoria.toUpperCase(),
                 updated_at: new Date(),
             });
 

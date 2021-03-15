@@ -20,7 +20,7 @@ export class CreateBebidas1615759423881 implements MigrationInterface {
                         type: "number",
                     },
                     {
-                        name: "tipo",
+                        name: "categoria",
                         type: "varchar",
                     },
                     {

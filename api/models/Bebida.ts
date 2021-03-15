@@ -13,7 +13,7 @@ class Bebida {
     valor: number;
 
     @Column()
-    tipo: string;
+    categoria: string;
 
     @CreateDateColumn()
     created_at: Date;

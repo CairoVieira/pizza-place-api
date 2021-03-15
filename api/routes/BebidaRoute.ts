@@ -26,9 +26,9 @@ bebida.get("/:id", async (request: Request, response: Response) => {
 });
 
 bebida.post("/", async (request: Request, response: Response) => {
-    const { nome, valor, tipo } = request.body;
+    const { nome, valor, categoria } = request.body;
 
-    const result = await bebidaController.salvar(nome, valor, tipo);
+    const result = await bebidaController.salvar(nome, valor, categoria);
 
     if (!(result instanceof Bebida)) {
         return response.status(500).json(result);
@@ -37,9 +37,9 @@ bebida.post("/", async (request: Request, response: Response) => {
 });
 
 bebida.put("/", async (request: Request, response: Response) => {
-    const { id, nome, valor, tipo } = request.body;
+    const { id, nome, valor, categoria } = request.body;
 
-    const result = await bebidaController.atualizar(id, nome, valor, tipo);
+    const result = await bebidaController.atualizar(id, nome, valor, categoria);
 
     if (!(result instanceof Bebida)) {
         return response.status(500).json(result);
