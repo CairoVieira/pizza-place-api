@@ -158,6 +158,26 @@ class PizzaController {
             return { error: err.message };
         }
     }
+
+    async deletar(id: string) {
+        try {
+            const pizzaRepository = getCustomRepository(PizzaRepository);
+
+            const pizzaExiste = await pizzaRepository.findOne(id);
+
+            if (!pizzaExiste) return { error: "Pizza não existe" };
+
+            await pizzaRepository.delete({ id: id });
+
+            const pizza = await pizzaRepository.findOne(id);
+
+            if (!pizza) return true;
+
+            return { error: "Não foi possível deletar" };
+        } catch (err) {
+            return { error: err.message };
+        }
+    }
 }
 
 export { PizzaController };

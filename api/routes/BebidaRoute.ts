@@ -1,10 +1,15 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, request } from "express";
+import { bool } from "yup";
 import { object } from "yup/lib/locale";
 import { BebidaController } from "../controllers/BebidaController";
 import { Bebida } from "../models/Bebida";
 
 const bebida = Router();
 const bebidaController = new BebidaController();
+
+interface Erro {
+    error: string;
+}
 
 bebida.get("/", async (request: Request, response: Response) => {
     const result = await bebidaController.listar();
@@ -45,6 +50,16 @@ bebida.put("/", async (request: Request, response: Response) => {
         return response.status(500).json(result);
     }
     return response.status(201).json(result);
+});
+
+bebida.delete("/:id", async (request: Request, response: Response) => {
+    const { id } = request.params;
+    const result = await bebidaController.deletar(id);
+
+    if (result !== true) {
+        return response.status(500).json(result);
+    }
+    return response.status(200).json(result);
 });
 
 export { bebida };

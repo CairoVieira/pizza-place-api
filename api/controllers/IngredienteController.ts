@@ -111,6 +111,28 @@ class IngredienteController {
             return { error: err.message };
         }
     }
+
+    async deletar(id: string) {
+        try {
+            const ingredienteRepository = getCustomRepository(
+                IngredienteRepository
+            );
+
+            const ingredienteExiste = await ingredienteRepository.findOne(id);
+
+            if (!ingredienteExiste) return { error: "Ingrediente não existe" };
+
+            await ingredienteRepository.delete({ id: id });
+
+            const ingrediente = await ingredienteRepository.findOne(id);
+
+            if (!ingrediente) return true;
+
+            return { error: "Não foi possível deletar" };
+        } catch (err) {
+            return { error: err.message };
+        }
+    }
 }
 
 export { IngredienteController };

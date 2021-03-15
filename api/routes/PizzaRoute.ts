@@ -51,4 +51,14 @@ pizza.put("/", async (request: Request, response: Response) => {
     return response.status(201).json(result);
 });
 
+pizza.delete("/:id", async (request: Request, response: Response) => {
+    const { id } = request.params;
+    const result = await pizzaController.deletar(id);
+
+    if (result !== true) {
+        return response.status(500).json(result);
+    }
+    return response.status(200).json(result);
+});
+
 export { pizza };

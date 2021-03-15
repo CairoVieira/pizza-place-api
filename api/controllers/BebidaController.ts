@@ -103,6 +103,26 @@ class BebidaController {
             return { error: err.message };
         }
     }
+
+    async deletar(id: string) {
+        try {
+            const bebidaRepository = getCustomRepository(BebidaRepository);
+
+            const bebidaExiste = await bebidaRepository.findOne(id);
+
+            if (!bebidaExiste) return { error: "Bebida não existe" };
+
+            await bebidaRepository.delete({ id: id });
+
+            const bebida = await bebidaRepository.findOne(id);
+
+            if (!bebida) return true;
+
+            return { error: "Não foi possível deletar" };
+        } catch (err) {
+            return { error: err.message };
+        }
+    }
 }
 
 export { BebidaController };

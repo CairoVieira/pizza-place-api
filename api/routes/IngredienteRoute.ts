@@ -52,4 +52,14 @@ ingrediente.put("/", async (request: Request, response: Response) => {
     return response.status(201).json(result);
 });
 
+ingrediente.delete("/:id", async (request: Request, response: Response) => {
+    const { id } = request.params;
+    const result = await ingredienteController.deletar(id);
+
+    if (result !== true) {
+        return response.status(500).json(result);
+    }
+    return response.status(200).json(result);
+});
+
 export { ingrediente };
