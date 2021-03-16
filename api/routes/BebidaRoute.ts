@@ -1,15 +1,9 @@
-import { Router, Request, Response, request } from "express";
-import { bool } from "yup";
-import { object } from "yup/lib/locale";
+import { Router, Request, Response} from "express";
 import { BebidaController } from "../controllers/BebidaController";
 import { Bebida } from "../models/Bebida";
 
 const bebida = Router();
 const bebidaController = new BebidaController();
-
-interface Erro {
-    error: string;
-}
 
 bebida.get("/", async (request: Request, response: Response) => {
     const result = await bebidaController.listar();

@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import { object } from "yup/lib/locale";
 import { IngredienteController } from "../controllers/IngredienteController";
 import { Ingrediente } from "../models/Ingrediente";
 

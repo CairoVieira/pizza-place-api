@@ -1,7 +1,5 @@
 import { getCustomRepository } from "typeorm";
 import * as yup from "yup";
-import { ItensPizza } from "../models/ItensPizza";
-import { BebidaRepository } from "../repositories/BebidaRepository";
 import { ItensPizzaRepository } from "../repositories/ItensPizzaRepository";
 import { PizzaRepository } from "../repositories/PizzaRepository";
 
@@ -24,8 +22,6 @@ class PizzaController {
                 );
                 pizza.itens_pizza = itens;
             });
-
-            console.log("listaPizzas=", listaPizzas);
 
             return listaPizzas;
         } catch (err) {
