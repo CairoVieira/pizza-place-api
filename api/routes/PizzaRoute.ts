@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Request, Response, Router } from "express";
 import { PizzaController } from "../controllers/PizzaController";
 import { Pizza } from "../models/Pizza";
 

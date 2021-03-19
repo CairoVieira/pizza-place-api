@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Request, Response, Router } from "express";
 import { IngredienteController } from "../controllers/IngredienteController";
 import { Ingrediente } from "../models/Ingrediente";
 

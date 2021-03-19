@@ -1,18 +1,12 @@
-import { Router, Request, Response, request } from "express";
-import { bool } from "yup";
-import { object } from "yup/lib/locale";
-import { BebidaController } from "../controllers/BebidaController";
-import { Bebida } from "../models/Bebida";
+import { Request, Response, Router } from "express";
+import { EnderecoController } from "../controllers/EnderecoController";
+import { Endereco } from "../models/Endereco";
 
-const bebida = Router();
-const bebidaController = new BebidaController();
+const endereco = Router();
+const enderecoController = new EnderecoController();
 
-interface Erro {
-    error: string;
-}
-
-bebida.get("/", async (request: Request, response: Response) => {
-    const result = await bebidaController.listar();
+endereco.get("/", async (request: Request, response: Response) => {
+    const result = await enderecoController.listar();
 
     if (!(result instanceof Array)) {
         return response.status(500).json(result);
@@ -20,41 +14,93 @@ bebida.get("/", async (request: Request, response: Response) => {
     return response.status(200).json(result);
 });
 
-bebida.get("/:id", async (request: Request, response: Response) => {
+endereco.get("/cliente/:id", async (request: Request, response: Response) => {
     const { id } = request.params;
-    const result = await bebidaController.listarUm(id);
+    const result = await enderecoController.listarPorCliente(id);
 
-    if (!(result instanceof Bebida)) {
+    if (!(result instanceof Array)) {
         return response.status(500).json(result);
     }
     return response.status(200).json(result);
 });
 
-bebida.post("/", async (request: Request, response: Response) => {
-    const { nome, valor, categoria } = request.body;
-
-    const result = await bebidaController.salvar(nome, valor, categoria);
-
-    if (!(result instanceof Bebida)) {
-        return response.status(500).json(result);
-    }
-    return response.status(201).json(result);
-});
-
-bebida.put("/", async (request: Request, response: Response) => {
-    const { id, nome, valor, categoria } = request.body;
-
-    const result = await bebidaController.atualizar(id, nome, valor, categoria);
-
-    if (!(result instanceof Bebida)) {
-        return response.status(500).json(result);
-    }
-    return response.status(201).json(result);
-});
-
-bebida.delete("/:id", async (request: Request, response: Response) => {
+endereco.get("/:id", async (request: Request, response: Response) => {
     const { id } = request.params;
-    const result = await bebidaController.deletar(id);
+    const result = await enderecoController.listarUm(id);
+
+    if (!(result instanceof Endereco)) {
+        return response.status(500).json(result);
+    }
+    return response.status(200).json(result);
+});
+
+endereco.post("/", async (request: Request, response: Response) => {
+    const {
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        estado,
+        pais,
+        cliente_id,
+    } = request.body;
+
+    const result = await enderecoController.salvar(
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        estado,
+        pais,
+        cliente_id
+    );
+
+    if (!(result instanceof Endereco)) {
+        return response.status(500).json(result);
+    }
+    return response.status(201).json(result);
+});
+
+endereco.put("/", async (request: Request, response: Response) => {
+    const {
+        id,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        estado,
+        pais,
+        cliente_id,
+    } = request.body;
+
+    const result = await enderecoController.atualizar(
+        id,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cep,
+        cidade,
+        estado,
+        pais,
+        cliente_id
+    );
+
+    if (!(result instanceof Endereco)) {
+        return response.status(500).json(result);
+    }
+    return response.status(201).json(result);
+});
+
+endereco.delete("/:id", async (request: Request, response: Response) => {
+    const { id } = request.params;
+    const result = await enderecoController.deletar(id);
 
     if (result !== true) {
         return response.status(500).json(result);
@@ -62,4 +108,4 @@ bebida.delete("/:id", async (request: Request, response: Response) => {
     return response.status(200).json(result);
 });
 
-export { bebida };
+export { endereco };

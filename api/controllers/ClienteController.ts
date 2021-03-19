@@ -1,8 +1,8 @@
+import btoa from "btoa";
 import { getCustomRepository } from "typeorm";
 import * as yup from "yup";
 import { ClienteRepository } from "../repositories/ClienteRepository";
 import { LoginRepository } from "../repositories/LoginRepository";
-import btoa from "btoa";
 
 class ClienteController {
     async listar() {
@@ -33,7 +33,11 @@ class ClienteController {
             const cliente = yup.object().shape({
                 nome: yup.string().required("Nome é obrigatório"),
                 cpf: yup.string().required("CPF é obrigatório"),
-                email: yup.string().uppercase().required("Email é obrigatório"),
+                email: yup
+                    .string()
+                    .email()
+                    .uppercase()
+                    .required("Email é obrigatório"),
                 senha: yup.string().required("Senha é obrigatório"),
             });
 
@@ -58,11 +62,12 @@ class ClienteController {
 
             const senhaCripto = btoa("Zap_" + senha + "_ata");
 
-            loginRepository.create({
+            const loginCreated = loginRepository.create({
                 email: email.toLowerCase(),
                 senha: senhaCripto,
                 cliente_id: clienteCreated.id,
             });
+            await loginRepository.save(loginCreated);
 
             return clienteCreated;
         } catch (err) {

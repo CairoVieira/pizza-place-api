@@ -1,65 +1,19 @@
-import { Router, Request, Response, request } from "express";
-import { bool } from "yup";
-import { object } from "yup/lib/locale";
-import { BebidaController } from "../controllers/BebidaController";
-import { Bebida } from "../models/Bebida";
+import { Request, Response, Router } from "express";
+import { LoginController } from "../controllers/LoginController";
+import { Login } from "../models/Login";
 
-const bebida = Router();
-const bebidaController = new BebidaController();
+const login = Router();
+const loginController = new LoginController();
 
-interface Erro {
-    error: string;
-}
+login.put("/", async (request: Request, response: Response) => {
+    const { email, senha, cliente_id } = request.body;
 
-bebida.get("/", async (request: Request, response: Response) => {
-    const result = await bebidaController.listar();
+    const result = await loginController.atualizar(senha, cliente_id, email);
 
-    if (!(result instanceof Array)) {
-        return response.status(500).json(result);
-    }
-    return response.status(200).json(result);
-});
-
-bebida.get("/:id", async (request: Request, response: Response) => {
-    const { id } = request.params;
-    const result = await bebidaController.listarUm(id);
-
-    if (!(result instanceof Bebida)) {
-        return response.status(500).json(result);
-    }
-    return response.status(200).json(result);
-});
-
-bebida.post("/", async (request: Request, response: Response) => {
-    const { nome, valor, categoria } = request.body;
-
-    const result = await bebidaController.salvar(nome, valor, categoria);
-
-    if (!(result instanceof Bebida)) {
+    if (!(result instanceof Login)) {
         return response.status(500).json(result);
     }
     return response.status(201).json(result);
 });
 
-bebida.put("/", async (request: Request, response: Response) => {
-    const { id, nome, valor, categoria } = request.body;
-
-    const result = await bebidaController.atualizar(id, nome, valor, categoria);
-
-    if (!(result instanceof Bebida)) {
-        return response.status(500).json(result);
-    }
-    return response.status(201).json(result);
-});
-
-bebida.delete("/:id", async (request: Request, response: Response) => {
-    const { id } = request.params;
-    const result = await bebidaController.deletar(id);
-
-    if (result !== true) {
-        return response.status(500).json(result);
-    }
-    return response.status(200).json(result);
-});
-
-export { bebida };
+export { login };
