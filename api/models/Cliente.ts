@@ -1,27 +1,19 @@
-import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
-    PrimaryColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
-import { ItensPizza } from "./ItensPizza";
+import { Endereco } from "./Endereco";
 
-@Entity("pizzas")
-class Pizza {
+@Entity("clientes")
+class Cliente {
     @PrimaryColumn()
     id: string;
 
     @Column()
     nome: string;
 
-    itens_pizza: ItensPizza[];
-
     @Column()
-    valor: number;
+    cpf: string;
+
+    itens_pizza: Endereco[];
 
     @CreateDateColumn()
     created_at: Date;
@@ -36,4 +28,4 @@ class Pizza {
     }
 }
 
-export { Pizza };
+export { Cliente };
