@@ -3,14 +3,11 @@ import {
     CreateDateColumn,
     Entity,
     JoinColumn,
-    ManyToMany,
     ManyToOne,
-    OneToOne,
     PrimaryColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { Ingrediente } from "./Ingrediente";
-import { Pizza } from "./Pizza";
 
 @Entity("itens_pizza")
 class ItensPizza {
