@@ -2,7 +2,9 @@ import btoa from "btoa";
 import { getCustomRepository } from "typeorm";
 import * as yup from "yup";
 import { ClienteRepository } from "../repositories/ClienteRepository";
+import { ItensPedidoRepository } from "../repositories/ItensPedidoRepository";
 import { LoginRepository } from "../repositories/LoginRepository";
+import { PedidoRepository } from "../repositories/PedidoRepository";
 
 class ClienteController {
     async listar() {
@@ -23,6 +25,34 @@ class ClienteController {
 
             if (!cliente) return { error: "Cliente não existe" };
             return cliente;
+        } catch (err) {
+            return { error: err.message };
+        }
+    }
+
+    async listarHistorico(id: string) {
+        try {
+            const pedidoRepository = getCustomRepository(PedidoRepository);
+            const itensPedidoRepository = getCustomRepository(
+                ItensPedidoRepository
+            );
+            const listaPedidos = await pedidoRepository.find({
+                where: { cliente_id: id },
+                relations: ["cliente", "endereco"],
+            });
+
+            const listaItensPedidos = await itensPedidoRepository.find({
+                relations: ["pizza", "bebida", "favorito"],
+            });
+
+            listaPedidos.forEach((pedido) => {
+                let itens = listaItensPedidos.filter(
+                    (item) => item.pedido_id == pedido.id
+                );
+                pedido.itens_pedido = itens;
+            });
+
+            return listaPedidos;
         } catch (err) {
             return { error: err.message };
         }

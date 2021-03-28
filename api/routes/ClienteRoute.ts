@@ -24,6 +24,19 @@ cliente.get("/:id", async (request: Request, response: Response) => {
     return response.status(200).json(result);
 });
 
+cliente.get(
+    "/historico-pedidos/:id",
+    async (request: Request, response: Response) => {
+        const { id } = request.params;
+        const result = await clienteController.listarHistorico(id);
+
+        if (!(result instanceof Array)) {
+            return response.status(500).json(result);
+        }
+        return response.status(200).json(result);
+    }
+);
+
 cliente.post("/", async (request: Request, response: Response) => {
     const { nome, cpf, email, senha } = request.body;
 
