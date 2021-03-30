@@ -55,8 +55,6 @@ class PedidoController {
                 relations: ["pizza", "bebida", "cliente"],
             });
 
-            console.log("listaFavoritos=", listaFavoritos);
-
             let favoritos = [];
             listaItensPedido.forEach((item) => {
                 favoritos = listaFavoritos.filter(
@@ -118,6 +116,7 @@ class PedidoController {
             });
 
             itens_pedido.forEach(async (item) => {
+                console.log("item=", item);
                 const itensPedidoCreated = itensPedidoRepository.create({
                     pedido_id: pedidoCreated.id,
                     bebida_id: item.bebida_id,
