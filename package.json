@@ -12,6 +12,7 @@
         "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
     },
     "dependencies": {
+        "all": "^0.0.0",
         "btoa": "^1.2.1",
         "cors": "^2.8.5",
         "express": "^4.17.1",

@@ -3,126 +3,149 @@ import * as yup from "yup";
 import { BebidaRepository } from "../repositories/BebidaRepository";
 
 class BebidaController {
-    async listar() {
-        try {
-            const bebidaRepository = getCustomRepository(BebidaRepository);
-            const listaBebidas = await bebidaRepository.find();
+	async listar() {
+		try {
+			const bebidaRepository = getCustomRepository(BebidaRepository);
+			const listaBebidas = await bebidaRepository.find();
 
-            return listaBebidas;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return listaBebidas;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-    async listarUm(id: string) {
-        try {
-            const bebidaRepository = getCustomRepository(BebidaRepository);
-            const bebida = await bebidaRepository.findOne(id);
+	async listarPorGrupo() {
+		try {
+			const sql = `SELECT DISTINCT CATEGORIA FROM BEBIDAS`;
+			const bebidaRepository = getCustomRepository(BebidaRepository);
 
-            if (!bebida) return { error: "Bebida não existe" };
-            return bebida;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			const resultado = [];
+			const categorias = await bebidaRepository.query(sql);
 
-    async salvar(nome: string, valor: number, categoria: string) {
-        try {
-            const bebida = yup.object().shape({
-                nome: yup.string().required("Nome é obrigatório"),
-                valor: yup.number().required("Valor é obrigatório"),
-                categoria: yup
-                    .string()
-                    .uppercase()
-                    .required("Tipo é obrigatório"),
-            });
+			console.log("categorias", categorias);
 
-            await bebida.validate({ nome, valor, categoria });
+			for (const cat of categorias) {
+				const lista = await bebidaRepository.find({
+					where: { categoria: cat.categoria },
+				});
+				resultado.push(lista);
+			}
 
-            const bebidaRepository = getCustomRepository(BebidaRepository);
+			return resultado;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-            const existeBebida = await bebidaRepository.findOne({
-                where: { nome: nome.toLowerCase() },
-            });
+	async listarUm(id: string) {
+		try {
+			const bebidaRepository = getCustomRepository(BebidaRepository);
+			const bebida = await bebidaRepository.findOne(id);
 
-            if (existeBebida) {
-                return { error: "Bebida já existe" };
-            }
+			if (!bebida) return { error: "Bebida não existe" };
+			return bebida;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-            const bebidaCreated = bebidaRepository.create({
-                nome: nome.toLowerCase(),
-                valor,
-                categoria: categoria.toUpperCase(),
-            });
+	async salvar(nome: string, valor: number, categoria: string) {
+		try {
+			const bebida = yup.object().shape({
+				nome: yup.string().required("Nome é obrigatório"),
+				valor: yup.number().required("Valor é obrigatório"),
+				categoria: yup
+					.string()
+					.uppercase()
+					.required("Tipo é obrigatório"),
+			});
 
-            await bebidaRepository.save(bebidaCreated);
+			await bebida.validate({ nome, valor, categoria });
 
-            return bebidaCreated;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			const bebidaRepository = getCustomRepository(BebidaRepository);
 
-    async atualizar(
-        id: string,
-        nome: string,
-        valor: number,
-        categoria: string
-    ) {
-        try {
-            const bebida = yup.object().shape({
-                id: yup.string().required("ID é obrigatório"),
-                nome: yup.string().required("Nome é obrigatório"),
-                valor: yup.number().required("Valor é obrigatório"),
-                categoria: yup
-                    .string()
-                    .uppercase()
-                    .required("Tipo é obrigatório"),
-            });
+			const existeBebida = await bebidaRepository.findOne({
+				where: { nome: nome.toLowerCase() },
+			});
 
-            await bebida.validate({ id, nome, valor, categoria });
+			if (existeBebida) {
+				return { error: "Bebida já existe" };
+			}
 
-            const bebidaRepository = getCustomRepository(BebidaRepository);
-            const bebidaUpdated = await bebidaRepository.findOne(id);
+			const bebidaCreated = bebidaRepository.create({
+				nome: nome.toLowerCase(),
+				valor,
+				categoria: categoria.toUpperCase(),
+			});
 
-            if (!bebidaUpdated) {
-                return { error: "Bebida não existe" };
-            }
-            const bebidaCreated = bebidaRepository.create({
-                id,
-                nome: nome.toLowerCase(),
-                valor,
-                categoria: categoria.toUpperCase(),
-                updated_at: new Date(),
-            });
+			await bebidaRepository.save(bebidaCreated);
 
-            await bebidaRepository.save(bebidaCreated);
+			return bebidaCreated;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-            return bebidaCreated;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+	async atualizar(
+		id: string,
+		nome: string,
+		valor: number,
+		categoria: string
+	) {
+		try {
+			const bebida = yup.object().shape({
+				id: yup.string().required("ID é obrigatório"),
+				nome: yup.string().required("Nome é obrigatório"),
+				valor: yup.number().required("Valor é obrigatório"),
+				categoria: yup
+					.string()
+					.uppercase()
+					.required("Tipo é obrigatório"),
+			});
 
-    async deletar(id: string) {
-        try {
-            const bebidaRepository = getCustomRepository(BebidaRepository);
+			await bebida.validate({ id, nome, valor, categoria });
 
-            const bebidaExiste = await bebidaRepository.findOne(id);
+			const bebidaRepository = getCustomRepository(BebidaRepository);
+			const bebidaUpdated = await bebidaRepository.findOne(id);
 
-            if (!bebidaExiste) return { error: "Bebida não existe" };
+			if (!bebidaUpdated) {
+				return { error: "Bebida não existe" };
+			}
+			const bebidaCreated = bebidaRepository.create({
+				id,
+				nome: nome.toLowerCase(),
+				valor,
+				categoria: categoria.toUpperCase(),
+				updated_at: new Date(),
+			});
 
-            await bebidaRepository.delete({ id: id });
+			await bebidaRepository.save(bebidaCreated);
 
-            const bebida = await bebidaRepository.findOne(id);
+			return bebidaCreated;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-            if (!bebida) return true;
+	async deletar(id: string) {
+		try {
+			const bebidaRepository = getCustomRepository(BebidaRepository);
 
-            return { error: "Não foi possível deletar" };
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			const bebidaExiste = await bebidaRepository.findOne(id);
+
+			if (!bebidaExiste) return { error: "Bebida não existe" };
+
+			await bebidaRepository.delete({ id: id });
+
+			const bebida = await bebidaRepository.findOne(id);
+
+			if (!bebida) return true;
+
+			return { error: "Não foi possível deletar" };
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 }
 
 export { BebidaController };

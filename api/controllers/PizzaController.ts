@@ -4,176 +4,176 @@ import { ItensPizzaRepository } from "../repositories/ItensPizzaRepository";
 import { PizzaRepository } from "../repositories/PizzaRepository";
 
 class PizzaController {
-    async listar() {
-        try {
-            const pizzaRepository = getCustomRepository(PizzaRepository);
-            const itensPizzaRepository = getCustomRepository(
-                ItensPizzaRepository
-            );
-            const listaPizzas = await pizzaRepository.find();
+	async listar() {
+		try {
+			const pizzaRepository = getCustomRepository(PizzaRepository);
+			const itensPizzaRepository = getCustomRepository(
+				ItensPizzaRepository
+			);
+			const listaPizzas = await pizzaRepository.find();
 
-            const listaItensPizza = await itensPizzaRepository.find({
-                relations: ["ingrediente"],
-            });
+			const listaItensPizza = await itensPizzaRepository.find({
+				relations: ["ingrediente"],
+			});
 
-            listaPizzas.forEach((pizza) => {
-                let itens = listaItensPizza.filter(
-                    (item) => item.pizza_id == pizza.id
-                );
-                pizza.itens_pizza = itens;
-            });
+			listaPizzas.forEach((pizza) => {
+				let itens = listaItensPizza.filter(
+					(item) => item.pizza_id == pizza.id
+				);
+				pizza.itens_pizza = itens;
+			});
 
-            return listaPizzas;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return listaPizzas;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-    async listarUm(id: string) {
-        try {
-            const pizzaRepository = getCustomRepository(PizzaRepository);
-            const itensPizzaRepository = getCustomRepository(
-                ItensPizzaRepository
-            );
-            const pizza = await pizzaRepository.findOne({
-                id: id,
-            });
+	async listarUm(id: string) {
+		try {
+			const pizzaRepository = getCustomRepository(PizzaRepository);
+			const itensPizzaRepository = getCustomRepository(
+				ItensPizzaRepository
+			);
+			const pizza = await pizzaRepository.findOne({
+				id: id,
+			});
 
-            const listaItensPizza = await itensPizzaRepository.find({
-                where: { pizza_id: id },
-                relations: ["ingrediente"],
-            });
+			const listaItensPizza = await itensPizzaRepository.find({
+				where: { pizza_id: id },
+				relations: ["ingrediente"],
+			});
 
-            pizza.itens_pizza = listaItensPizza;
+			pizza.itens_pizza = listaItensPizza;
 
-            return pizza;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return pizza;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-    async salvar(nome: string, itens_pizza: string[]) {
-        try {
-            const pizza = yup.object().shape({
-                nome: yup.string().required("Nome é obrigatório"),
-                itens_pizza: yup
-                    .array()
-                    .required("Itens da pizza é obrigatório")
-                    .min(1),
-            });
+	async salvar(nome: string, valor: number, itens_pizza: string[]) {
+		try {
+			const pizza = yup.object().shape({
+				nome: yup.string().required("Nome é obrigatório"),
+				itens_pizza: yup
+					.array()
+					.required("Itens da pizza é obrigatório")
+					.min(1),
+			});
 
-            await pizza.validate({ nome, itens_pizza });
+			await pizza.validate({ nome, valor, itens_pizza });
 
-            const pizzaRepository = getCustomRepository(PizzaRepository);
-            const itensPizzaRepository = getCustomRepository(
-                ItensPizzaRepository
-            );
+			const pizzaRepository = getCustomRepository(PizzaRepository);
+			const itensPizzaRepository = getCustomRepository(
+				ItensPizzaRepository
+			);
 
-            const existePizza = await pizzaRepository.findOne({
-                where: { nome: nome.toLowerCase() },
-            });
+			const existePizza = await pizzaRepository.findOne({
+				where: { nome: nome.toLowerCase() },
+			});
 
-            if (existePizza) return { error: "Pizza já existe" };
+			if (existePizza) return { error: "Pizza já existe" };
 
-            const pizzaCreated = pizzaRepository.create({
-                nome: nome.toLowerCase(),
-                valor: 0,
-            });
+			const pizzaCreated = pizzaRepository.create({
+				nome: nome.toLowerCase(),
+				valor: valor ? valor : 0,
+			});
 
-            await pizzaRepository.save(pizzaCreated);
+			await pizzaRepository.save(pizzaCreated);
 
-            itens_pizza.forEach(async (item) => {
-                const itensPizzaCreated = itensPizzaRepository.create({
-                    pizza_id: pizzaCreated.id,
-                    ingrediente_id: item,
-                });
+			itens_pizza.forEach(async (item) => {
+				const itensPizzaCreated = itensPizzaRepository.create({
+					pizza_id: pizzaCreated.id,
+					ingrediente_id: item,
+				});
 
-                await itensPizzaRepository.save(itensPizzaCreated);
-            });
+				await itensPizzaRepository.save(itensPizzaCreated);
+			});
 
-            return pizzaCreated;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return pizzaCreated;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-    async atualizar(
-        id: string,
-        nome: string,
-        valor: number,
-        itens_pizza: string[]
-    ) {
-        try {
-            const pizza = yup.object().shape({
-                id: yup.string().required("ID é obrigatório"),
-                nome: yup.string().required("Nome é obrigatório"),
-                valor: yup.number().required("Valor é obrigatório"),
-                itens_pizza: yup
-                    .array()
-                    .required("Itens da pizza é obrigatório")
-                    .min(1),
-            });
+	async atualizar(
+		id: string,
+		nome: string,
+		valor: number,
+		itens_pizza: string[]
+	) {
+		try {
+			const pizza = yup.object().shape({
+				id: yup.string().required("ID é obrigatório"),
+				nome: yup.string().required("Nome é obrigatório"),
+				valor: yup.number().required("Valor é obrigatório"),
+				itens_pizza: yup
+					.array()
+					.required("Itens da pizza é obrigatório")
+					.min(1),
+			});
 
-            await pizza.validate({ id, nome, valor, itens_pizza });
+			await pizza.validate({ id, nome, valor, itens_pizza });
 
-            const pizzaRepository = getCustomRepository(PizzaRepository);
-            const itensPizzaRepository = getCustomRepository(
-                ItensPizzaRepository
-            );
-            const pizzaUpdated = await pizzaRepository.findOne(id);
+			const pizzaRepository = getCustomRepository(PizzaRepository);
+			const itensPizzaRepository = getCustomRepository(
+				ItensPizzaRepository
+			);
+			const pizzaUpdated = await pizzaRepository.findOne(id);
 
-            if (!pizzaUpdated) {
-                return { error: "Pizza não existe" };
-            }
-            const pizzaCreated = pizzaRepository.create({
-                id,
-                nome: nome.toLowerCase(),
-                valor,
-                updated_at: new Date(),
-            });
+			if (!pizzaUpdated) {
+				return { error: "Pizza não existe" };
+			}
+			const pizzaCreated = pizzaRepository.create({
+				id,
+				nome: nome.toLowerCase(),
+				valor,
+				updated_at: new Date(),
+			});
 
-            await pizzaRepository.save(pizzaCreated);
+			await pizzaRepository.save(pizzaCreated);
 
-            const deletou = itensPizzaRepository.delete({
-                pizza_id: id,
-            });
+			const deletou = itensPizzaRepository.delete({
+				pizza_id: id,
+			});
 
-            if (deletou) {
-                itens_pizza.forEach(async (item) => {
-                    const itensPizzaCreated = itensPizzaRepository.create({
-                        pizza_id: pizzaCreated.id,
-                        ingrediente_id: item,
-                    });
+			if (deletou) {
+				itens_pizza.forEach(async (item) => {
+					const itensPizzaCreated = itensPizzaRepository.create({
+						pizza_id: pizzaCreated.id,
+						ingrediente_id: item,
+					});
 
-                    await itensPizzaRepository.save(itensPizzaCreated);
-                });
-            }
+					await itensPizzaRepository.save(itensPizzaCreated);
+				});
+			}
 
-            return pizzaCreated;
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return pizzaCreated;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 
-    async deletar(id: string) {
-        try {
-            const pizzaRepository = getCustomRepository(PizzaRepository);
+	async deletar(id: string) {
+		try {
+			const pizzaRepository = getCustomRepository(PizzaRepository);
 
-            const pizzaExiste = await pizzaRepository.findOne(id);
+			const pizzaExiste = await pizzaRepository.findOne(id);
 
-            if (!pizzaExiste) return { error: "Pizza não existe" };
+			if (!pizzaExiste) return { error: "Pizza não existe" };
 
-            await pizzaRepository.delete({ id: id });
+			await pizzaRepository.delete({ id: id });
 
-            const pizza = await pizzaRepository.findOne(id);
+			const pizza = await pizzaRepository.findOne(id);
 
-            if (!pizza) return true;
+			if (!pizza) return true;
 
-            return { error: "Não foi possível deletar" };
-        } catch (err) {
-            return { error: err.message };
-        }
-    }
+			return { error: "Não foi possível deletar" };
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
 }
 
 export { PizzaController };
