@@ -2,6 +2,7 @@ import btoa from "btoa";
 import { getCustomRepository } from "typeorm";
 import * as yup from "yup";
 import { ClienteRepository } from "../repositories/ClienteRepository";
+import { EnderecoRepository } from "../repositories/EnderecoRepository";
 import { LoginRepository } from "../repositories/LoginRepository";
 
 class LoginController {
@@ -52,15 +53,21 @@ class LoginController {
 
 			const loginRepository = getCustomRepository(LoginRepository);
 			const clienteRepository = getCustomRepository(ClienteRepository);
+			const enderecoRepository = getCustomRepository(EnderecoRepository);
 
 			const login = await loginRepository.findOne({
 				where: { email: email, senha: senha },
 			});
 			if (!login) return { error: "E-mail ou senha inválidos" };
 
-			const cliente = clienteRepository.findOne(login.cliente_id);
+			const cliente = await clienteRepository.findOne(login.cliente_id);
 
 			if (!cliente) return { error: "Cliente não existe" };
+
+			const enderecos = await enderecoRepository.findOne({
+				where: { cliente_id: cliente.id },
+			});
+			cliente.endereco = enderecos;
 
 			return cliente;
 		} catch (err) {
