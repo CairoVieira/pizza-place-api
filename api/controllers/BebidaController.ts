@@ -22,8 +22,6 @@ class BebidaController {
 			const resultado = [];
 			const categorias = await bebidaRepository.query(sql);
 
-			console.log("categorias", categorias);
-
 			for (const cat of categorias) {
 				const lista = await bebidaRepository.find({
 					where: { categoria: cat.categoria },

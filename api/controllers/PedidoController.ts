@@ -1,7 +1,6 @@
 import { getCustomRepository } from "typeorm";
 import * as yup from "yup";
 import { ItensPedido } from "../models/ItensPedido";
-import { ClienteRepository } from "../repositories/ClienteRepository";
 import { FavoritoRepository } from "../repositories/FavoritoRepository";
 import { ItensPedidoRepository } from "../repositories/ItensPedidoRepository";
 import { PedidoRepository } from "../repositories/PedidoRepository";
@@ -160,21 +159,20 @@ class PedidoController {
 				metodo_pagamento,
 			});
 
-			itens_pedido.forEach(async (item) => {
-				console.log("item=", item);
+			await pedidoRepository.save(pedidoCreated);
+
+			itens_pedido.map(async (item) => {
 				const itensPedidoCreated = itensPedidoRepository.create({
 					pedido_id: pedidoCreated.id,
 					bebida_id: item.bebida_id,
 					pizza_id: item.pizza_id,
 					favorito_id: item.favorito_id,
 					valor_item_pedido: item.valor_item_pedido,
+					quantidade: item.quantidade,
 				});
 
 				await itensPedidoRepository.save(itensPedidoCreated);
 			});
-
-			await pedidoRepository.save(pedidoCreated);
-
 			return pedidoCreated;
 		} catch (err) {
 			return { error: err.message };

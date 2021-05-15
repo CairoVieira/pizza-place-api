@@ -4,28 +4,31 @@ import { ItensPizza } from "./ItensPizza";
 
 @Entity("pizzas")
 class Pizza {
-    @PrimaryColumn()
-    id: string;
+	@PrimaryColumn()
+	id: string;
 
-    @Column()
-    nome: string;
+	@Column()
+	nome: string;
 
-    itens_pizza: ItensPizza[];
+	itens_pizza: ItensPizza[];
 
-    @Column()
-    valor: number;
+	@Column()
+	valor: number;
 
-    @CreateDateColumn()
-    created_at: Date;
+	@Column()
+	is_menu: boolean;
 
-    @CreateDateColumn()
-    updated_at: Date;
+	@CreateDateColumn()
+	created_at: Date;
 
-    constructor() {
-        if (!this.id) {
-            this.id = uuid();
-        }
-    }
+	@CreateDateColumn()
+	updated_at: Date;
+
+	constructor() {
+		if (!this.id) {
+			this.id = uuid();
+		}
+	}
 }
 
 export { Pizza };
