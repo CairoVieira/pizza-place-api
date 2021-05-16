@@ -39,6 +39,37 @@ class ClienteController {
 		}
 	}
 
+	async listaPizzasCliente(id: string) {
+		try {
+			const pedidoRepository = getCustomRepository(PedidoRepository);
+
+			const sql = `SELECT
+								pizzas.id,
+								pizzas.nome,
+								pizzas.valor,
+								pizzas.created_at,
+								pizzas.updated_at,
+								CASE pizzas.is_menu WHEN 0 then 'false'
+									ELSE 'true'
+									END as is_menu
+							FROM
+								pedidos pedidos
+							LEFT JOIN itens_pedido itens_pedido ON
+								pedidos.id = itens_pedido.pedido_id
+							LEFT JOIN pizzas pizzas ON
+								itens_pedido.pizza_id = pizzas.id
+							WHERE
+								pedidos.cliente_id = '${id}'
+								AND pizzas.is_menu = 0`;
+
+			const pizzas = await pedidoRepository.query(sql);
+
+			return pizzas;
+		} catch (err) {
+			return { error: err.message };
+		}
+	}
+
 	async listarHistorico(id: string) {
 		try {
 			const pedidoRepository = getCustomRepository(PedidoRepository);

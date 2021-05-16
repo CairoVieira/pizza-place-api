@@ -1,61 +1,64 @@
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryColumn,
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	PrimaryColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { Cliente } from "./Cliente";
 
 @Entity("enderecos")
 class Endereco {
-    @PrimaryColumn()
-    id: string;
+	@PrimaryColumn()
+	id: string;
 
-    @Column()
-    logradouro: string;
+	@Column()
+	logradouro: string;
 
-    @Column()
-    numero: string;
+	@Column()
+	numero: string;
 
-    @Column()
-    complemento: string;
+	@Column()
+	complemento: string;
 
-    @Column()
-    bairro: string;
+	@Column()
+	bairro: string;
 
-    @Column()
-    cep: string;
+	@Column()
+	cep: string;
 
-    @Column()
-    cidade: string;
+	@Column()
+	cidade: string;
 
-    @Column()
-    estado: string;
+	@Column()
+	estado: string;
 
-    @Column()
-    pais: string;
+	@Column()
+	pais: string;
 
-    @Column()
-    cliente_id: string;
+	@Column()
+	is_principal: boolean;
 
-    @ManyToOne(() => Cliente)
-    @JoinColumn({ name: "cliente_id" })
-    cliente: Cliente;
+	@Column()
+	cliente_id: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+	@ManyToOne(() => Cliente)
+	@JoinColumn({ name: "cliente_id" })
+	cliente: Cliente;
 
-    @CreateDateColumn()
-    updated_at: Date;
+	@CreateDateColumn()
+	created_at: Date;
 
-    constructor() {
-        if (!this.id) {
-            this.id = uuid();
-        }
-    }
+	@CreateDateColumn()
+	updated_at: Date;
+
+	constructor() {
+		if (!this.id) {
+			this.id = uuid();
+		}
+	}
 }
 
 export { Endereco };
